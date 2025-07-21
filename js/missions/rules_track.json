@@ -60,5 +60,66 @@
         "a1b3"
       ]
     }
+    ,
+    {
+      "id": "rules_06",
+      "title": "Die Dame",
+      "instruction": "Die Dame verbindet Turm- und Läuferzüge. Bewege sie nach h5.",
+      "goals": [
+        "Damezug durchführen"
+      ],
+      "fen": "8/8/8/8/8/8/8/3Q4 w - - 0 1",
+      "solution": [
+        "d1h5"
+      ]
+    },
+    {
+      "id": "rules_07",
+      "title": "Der König",
+      "instruction": "Der König zieht ein Feld in jede Richtung. Ziehe ihn nach e2.",
+      "goals": [
+        "Königszug durchführen"
+      ],
+      "fen": "8/8/8/8/8/8/8/4K3 w - - 0 1",
+      "solution": [
+        "e1e2"
+      ]
+    },
+    {
+      "id": "rules_08",
+      "title": "Kurze Rochade",
+      "instruction": "Bei der kurzen Rochade ziehen König und Turm gemeinsam. Rochiere.",
+      "goals": [
+        "Kurze Rochade durchführen"
+      ],
+      "fen": "8/8/8/8/8/8/8/4K2R w K - 0 1",
+      "solution": [
+        "e1g1"
+      ]
+    },
+    {
+      "id": "rules_09",
+      "title": "Schlagen",
+      "instruction": "Figuren schlagen gegnerische Figuren auf deren Feld. Schlage den schwarzen Bauern.",
+      "goals": [
+        "Schlagen durchführen"
+      ],
+      "fen": "8/8/8/3p4/4P3/8/8/8 w - - 0 1",
+      "solution": [
+        "e4d5"
+      ]
+    },
+    {
+      "id": "rules_10",
+      "title": "Schach geben",
+      "instruction": "Gib dem schwarzen König Schach mit deinem Turm.",
+      "goals": [
+        "Schach geben"
+      ],
+      "fen": "4k3/8/8/8/8/8/8/4R3 w - - 0 1",
+      "solution": [
+        "e1e8"
+      ]
+    }
   ]
 }

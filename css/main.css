@@ -142,6 +142,29 @@ body {
     margin-top: var(--spacing-lg);
 }
 
+/* Track Grid */
+.track-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.track-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    padding: var(--spacing-md);
+}
+
+.track-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
 .mission-card {
     background: white;
     border-radius: var(--radius-lg);
@@ -651,6 +674,10 @@ body {
     }
     
     .mission-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .track-grid {
         grid-template-columns: 1fr;
     }
     

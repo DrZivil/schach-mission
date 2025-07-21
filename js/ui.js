@@ -363,9 +363,20 @@ class UIController {
     }
 
     goToNextMission() {
-        // Find next available mission
-        window.missionSchachApp.showScreen('mission-select');
-        window.missionSchachApp.setActiveNavButton('missions-btn');
+        const app = window.missionSchachApp;
+        const manager = window.missionManager;
+        if (!app || !manager) {
+            return;
+        }
+
+        const nextId = manager.getNextMissionId(app.currentMission, app.currentTrack);
+
+        if (nextId) {
+            app.startMission(nextId);
+        } else {
+            app.showScreen('mission-select');
+            app.setActiveNavButton('missions-btn');
+        }
     }
 
     // Error handling

@@ -105,4 +105,27 @@ export class MissionManager {
         };
     }
 
+    getNextMissionId(currentMissionId, trackId = null) {
+        const missions = this.getMissionList(trackId);
+        const index = missions.findIndex(m => m.id === currentMissionId);
+        if (index >= 0 && index < missions.length - 1) {
+            return missions[index + 1].id;
+        }
+        return null;
+    }
+
+    async completeMission(missionId, score = 0, playTime = 0) {
+        if (typeof storage === 'undefined' || !missionId) return;
+
+        const stars = score >= 80 ? 3 : score >= 60 ? 2 : score >= 40 ? 1 : 0;
+        const progressData = {
+            status: 'completed',
+            score,
+            stars,
+            playTime
+        };
+
+        await storage.saveProgress(missionId, progressData);
+    }
+
 }

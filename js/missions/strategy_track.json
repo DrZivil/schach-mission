@@ -106,6 +106,95 @@
         "f1b5"
       ],
       "hint": "Bringe den Läufer auf eine Diagonale, wo er Druck auf den Springer ausübt."
+    },
+    {
+      "id": "s06",
+      "title": "Offene Linie nutzen",
+      "description": "Türme gehören auf offene Linien, wo keine Bauern stehen.",
+      "objective": "Platziere deinen Turm auf der d-Linie.",
+      "goals": [
+        {
+          "type": "position",
+          "piece": "R",
+          "square": "d1"
+        }
+      ],
+      "startFen": "8/8/8/8/8/8/8/R3K2R w - - 0 1",
+      "solution": [
+        "a1d1"
+      ],
+      "hint": "Schiebe den Turm auf die offene Linie."
+    },
+    {
+      "id": "s07",
+      "title": "Starker Springerposten",
+      "description": "Springer entfalten Kraft auf vorgerückten Feldern.",
+      "objective": "Stelle den Springer auf f5.",
+      "goals": [
+        {
+          "type": "position",
+          "piece": "N",
+          "square": "f5"
+        }
+      ],
+      "startFen": "8/8/8/8/8/6N1/8/8 w - - 0 1",
+      "solution": [
+        "g3f5"
+      ],
+      "hint": "Ein Springer auf f5 ist oft unangenehm für den Gegner."
+    },
+    {
+      "id": "s08",
+      "title": "Lange Diagonale besetzen",
+      "description": "Läufer sind stark auf langen Diagonalen.",
+      "objective": "Bringe den Läufer auf g5.",
+      "goals": [
+        {
+          "type": "position",
+          "piece": "B",
+          "square": "g5"
+        }
+      ],
+      "startFen": "8/8/8/8/8/8/8/2B5 w - - 0 1",
+      "solution": [
+        "c1g5"
+      ],
+      "hint": "Von g5 aus wirkt der Läufer auf viele Felder."
+    },
+    {
+      "id": "s09",
+      "title": "Schwachen Bauern angreifen",
+      "description": "Isolierte Bauern sind gute Ziele.",
+      "objective": "Greife den Bauern auf d6 an.",
+      "goals": [
+        {
+          "type": "attack",
+          "piece": "P"
+        }
+      ],
+      "startFen": "4k3/8/3p4/8/8/8/8/3Q4 w - - 0 1",
+      "solution": [
+        "d1d6"
+      ],
+      "hint": "Nutze die Dame, um Druck auf d6 auszuüben."
+    },
+    {
+      "id": "s10",
+      "title": "König aktivieren",
+      "description": "Im Endspiel wird der König zur Angriffsfigur.",
+      "objective": "Führe den König ins Zentrum.",
+      "goals": [
+        {
+          "type": "position",
+          "piece": "K",
+          "square": "e4"
+        }
+      ],
+      "startFen": "8/8/8/8/8/8/4K3/8 w - - 0 1",
+      "solution": [
+        "e2e4"
+      ],
+      "hint": "Zentrale Könige dominieren viele Felder."
     }
   ]
 }

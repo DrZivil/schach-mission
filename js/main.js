@@ -221,12 +221,6 @@ class MissionSchachApp {
         }
     }
 	
-	await this.initializeMissions();
-	this.showScreen('mission-select');
-	this.initializeUI();
-	this.initializeEventListeners();
-	await this.loadScreenContent('mission-select'); // ← direkt laden!
-
 }
 
 const app = new MissionSchachApp();

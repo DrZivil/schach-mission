@@ -22,11 +22,13 @@ export class MissionManager {
             this.tracks = data;
 
             // Load all missions per track
-			for (const track of this.tracks) {
-				const missionResponse = await fetch(`/js/missions/${track.file}`);
-				const missionData = await missionResponse.json();
-				this.missions[track.id] = missionData.missions; // ← WICHTIG
-			}
+            for (const track of this.tracks) {
+                const missionResponse = await fetch(`/js/missions/${track.file}`);
+                const missionData = await missionResponse.json();
+                this.missions[track.id] = Array.isArray(missionData.missions)
+                    ? missionData.missions.map(m => this.normalizeMission(m))
+                    : [];
+            }
 
         } catch (error) {
             console.error('Fehler beim Laden der Tracks:', error);
@@ -92,6 +94,15 @@ export class MissionManager {
             if (mission) return mission;
         }
         return null;
+    }
+
+    normalizeMission(mission) {
+        if (!mission) return {};
+        return {
+            ...mission,
+            instruction: mission.instruction || mission.objective || mission.description || '',
+            boardInitial: mission.boardInitial || mission.fen || mission.startFen || '8/8/8/8/8/8/8/8 w - - 0 1'
+        };
     }
 
 }

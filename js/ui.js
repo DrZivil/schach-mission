@@ -94,13 +94,38 @@ class UIController {
     updateMissionGoals(goals) {
         const goalsElement = document.getElementById('mission-goals');
         if (goalsElement && Array.isArray(goals)) {
-            goalsElement.innerHTML = goals.map(goal => 
-                `<div class="goal" data-goal="${goal}">
+            goalsElement.innerHTML = goals.map(goal => {
+                const text = this.formatGoal(goal);
+                return `<div class="goal" data-goal="${text}">
                     <span class="goal-icon">○</span>
-                    <span class="goal-text">${goal}</span>
-                </div>`
-            ).join('');
+                    <span class="goal-text">${text}</span>
+                </div>`;
+            }).join('');
         }
+    }
+
+    formatGoal(goal) {
+        if (typeof goal === 'string') return goal;
+
+        switch (goal.type) {
+            case 'position':
+                return `Bringe ${this.getPieceName(goal.piece)} nach ${goal.square}`;
+            case 'castle':
+                return goal.side === 'kingside' ? 'Rochiere kurz' : 'Rochiere lang';
+            case 'check':
+                return 'Setze den König schach';
+            case 'attack':
+                return `Greife eine ${this.getPieceName(goal.piece)} an`;
+            case 'pin':
+                return 'Fessele eine Figur';
+            default:
+                return JSON.stringify(goal);
+        }
+    }
+
+    getPieceName(piece) {
+        const map = { P: 'Bauer', N: 'Springer', B: 'L\xE4ufer', R: 'Turm', Q: 'Dame', K: 'K\xF6nig' };
+        return map[piece?.toUpperCase()] || 'Figur';
     }
 
     updateMissionScore(score, maxScore = 100) {

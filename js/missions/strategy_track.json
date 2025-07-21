@@ -101,7 +101,7 @@
           "behind": "K"
         }
       ],
-      "startFen": "rnbqk2r/pppp1ppp/5n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 4",
+      "startFen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 4",
       "solution": [
         "f1b5"
       ],

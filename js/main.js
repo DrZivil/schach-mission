@@ -232,35 +232,7 @@ class MissionSchachApp {
             this.showScreen('mission-select');
             this.setActiveNavButton('missions-btn');
         }
-    }
-
-    async importTrackFile(file) {
-        try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-
-            let tracks = [];
-            if (Array.isArray(data)) {
-                tracks = data;
-            } else if (data.tracks) {
-                tracks = data.tracks;
-            } else if (data.id) {
-                tracks = [data];
-            }
-
-            if (tracks.length > 0 && window.missionManager) {
-                window.missionManager.importTracks(tracks);
-                this.loadScreenContent('mission-select');
-                this.showSuccess('Import erfolgreich', `${tracks.length} Track(s) importiert.`);
-            } else {
-                this.showError('Import fehlgeschlagen', 'Ungültiges Format.');
-            }
-        } catch (error) {
-            console.error('Import error:', error);
-            this.showError('Import fehlgeschlagen', error.message);
-        }
-    }
-	
+    }	
 }
 
 const app = new MissionSchachApp();

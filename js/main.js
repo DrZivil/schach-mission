@@ -4,7 +4,8 @@ import { MissionManager } from './mission-manager.js';
 
 class MissionSchachApp {
     constructor() {
-        this.currentScreen = 'mission-select';
+        this.currentScreen = 'track-select';
+        this.currentTrack = null;
         this.currentMission = null;
         this.isInitialized = false;
     }
@@ -20,7 +21,8 @@ class MissionSchachApp {
             this.initializeUI();
             this.initializeEventListeners();
 
-            this.showScreen('mission-select');
+            this.showScreen('track-select');
+            this.setActiveNavButton('missions-btn');
             this.isInitialized = true;
             console.log('Mission Schach App initialized successfully');
         } catch (error) {
@@ -40,8 +42,8 @@ class MissionSchachApp {
 
     async initializeMissions() {
         const tracks = await loadTracks();
-        window.missionManager = new MissionManager(tracks);
-        window.missionManager.init();
+        window.missionManager = new MissionManager();
+        await window.missionManager.init(tracks);
         console.log('Mission system initialized with tracks:', tracks.map(t => t.id).join(', '));
     }
 
@@ -59,7 +61,7 @@ class MissionSchachApp {
         const homeProgressBtn = document.getElementById('home-progress-btn');
 
         if (missionsBtn) missionsBtn.addEventListener('click', () => {
-            this.showScreen('mission-select');
+            this.showScreen('track-select');
             this.setActiveNavButton('missions-btn');
         });
 
@@ -120,33 +122,49 @@ class MissionSchachApp {
         }
     }
 
-	async loadScreenContent(screenId) {
-		if (screenId === 'mission-select' && window.missionManager) {
-			const missions = window.missionManager.getMissionList();
-			const grid = document.getElementById('mission-grid');
-				if (!grid) return;
+    async loadScreenContent(screenId) {
+        if (screenId === 'track-select' && window.missionManager) {
+            const tracks = window.missionManager.getTrackList();
+            const grid = document.getElementById('track-grid');
+            if (!grid) return;
 
-				grid.innerHTML = missions.map(mission => `
-					<div class="mission-card" data-mission="${mission.id}">
-						<h3>${mission.title || 'Kein Titel'}</h3>
-						<p>${mission.instruction || 'Keine Beschreibung verfügbar'}</p>
-						<button class="btn btn-primary">Start</button>
-					</div>
-				`).join('');
+            grid.innerHTML = tracks.map(track => `
+                <div class="track-card" data-track="${track.id}">
+                    <h3>${track.title || 'Kein Titel'}</h3>
+                    <p>${track.description || ''}</p>
+                    <button class="btn btn-primary">Auswählen</button>
+                </div>
+            `).join('');
 
+            grid.querySelectorAll('.track-card').forEach(card => {
+                card.querySelector('button').addEventListener('click', () => {
+                    const trackId = card.dataset.track;
+                    window.missionSchachApp.selectTrack(trackId);
+                });
+            });
+        } else if (screenId === 'mission-select' && window.missionManager) {
+            const missions = window.missionManager.getMissionList(this.currentTrack);
+            const grid = document.getElementById('mission-grid');
+            if (!grid) return;
 
-		// Click handler
-		grid.querySelectorAll('.mission-card').forEach(card => {
-			card.querySelector('button').addEventListener('click', () => {
-				const missionId = card.dataset.mission;
-				window.missionSchachApp.startMission(missionId);
-			});
-		});
-	}
-	else if (screenId === 'progress-screen') {
-		await this.loadProgressStats();
-	}
-}
+            grid.innerHTML = missions.map(mission => `
+                <div class="mission-card" data-mission="${mission.id}">
+                    <h3>${mission.title || 'Kein Titel'}</h3>
+                    <p>${mission.instruction || mission.description || ''}</p>
+                    <button class="btn btn-primary">Start</button>
+                </div>
+            `).join('');
+
+            grid.querySelectorAll('.mission-card').forEach(card => {
+                card.querySelector('button').addEventListener('click', () => {
+                    const missionId = card.dataset.mission;
+                    window.missionSchachApp.startMission(missionId);
+                });
+            });
+        } else if (screenId === 'progress-screen') {
+            await this.loadProgressStats();
+        }
+    }
 
 
     setActiveNavButton(buttonId) {
@@ -217,6 +235,11 @@ class MissionSchachApp {
         }
     }
 
+    selectTrack(trackId) {
+        this.currentTrack = trackId;
+        this.showScreen('mission-select');
+    }
+
     goToMissionOverview() {
         if (this.currentScreen === 'game-screen' && this.currentMission) {
             this.showModal(
@@ -224,15 +247,15 @@ class MissionSchachApp {
                 '<p>Möchtest du zur Missionübersicht zurückkehren? Der aktuelle Fortschritt geht verloren.</p>',
                 () => {
                     this.currentMission = null;
-                    this.showScreen('mission-select');
+                    this.showScreen('track-select');
                     this.setActiveNavButton('missions-btn');
                 }
             );
         } else {
-            this.showScreen('mission-select');
+            this.showScreen('track-select');
             this.setActiveNavButton('missions-btn');
         }
-    }	
+    }
 }
 
 const app = new MissionSchachApp();

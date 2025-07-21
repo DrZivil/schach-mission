@@ -4,9 +4,13 @@ export class MissionManager {
         this.missions = {};
     }
 
-    async init() {
+    async init(preloadedTracks = null) {
         console.log('MissionManager initializing...');
-        await this.loadTracks();
+        if (Array.isArray(preloadedTracks)) {
+            this.importTracks(preloadedTracks);
+        } else {
+            await this.loadTracks();
+        }
         console.log('MissionManager ready.');
     }
 
@@ -39,19 +43,15 @@ export class MissionManager {
         return list.find(m => m.id === missionId);
     }
 
-    getMissionList() {
+    getMissionList(trackId = null) {
         const all = [];
 
-		
-        // Flatten all missions with track references
-		if (!Array.isArray(this.tracks)) return all;
-        
-		for (const track of this.tracks) {
-            //const list = this.missions[track.id] || [];
-			const list = Array.isArray(this.missions[track.id]) ? this.missions[track.id] : [];
+        if (!Array.isArray(this.tracks)) return all;
 
-			
-			console.log(list);
+        const tracks = trackId ? this.tracks.filter(t => t.id === trackId) : this.tracks;
+
+        for (const track of tracks) {
+            const list = Array.isArray(this.missions[track.id]) ? this.missions[track.id] : [];
             for (const m of list) {
                 all.push({ ...m, trackId: track.id });
             }
@@ -84,8 +84,9 @@ export class MissionManager {
         }
     }
 
-    loadMission(missionId) {
-        for (const track of this.tracks) {
+    loadMission(missionId, trackId = null) {
+        const tracks = trackId ? this.tracks.filter(t => t.id === trackId) : this.tracks;
+        for (const track of tracks) {
             const list = this.missions[track.id] || [];
             const mission = list.find(m => m.id === missionId);
             if (mission) return mission;

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mission Schach - Kinderfreundliches Schachlernspiel">
+    <meta name="theme-color" content="#2c3e50">
+    
+    <title>Mission Schach</title>
+    
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/icon-16.png">
+    <link rel="apple-touch-icon" href="img/icon-180.png">
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1>Mission Schach</h1>
+            <nav class="main-nav">
+                <button id="missions-btn" class="nav-btn active">Missionen</button>
+                <button id="progress-btn" class="nav-btn">Fortschritt</button>
+            </nav>
+        </header>
+
+        <main class="app-main">
+            <!-- Mission Selection Screen -->
+            <section id="mission-select" class="screen active">
+                <div class="mission-grid" id="mission-grid">
+                    <!-- Missions will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Game Screen -->
+            <section id="game-screen" class="screen">
+                <div class="game-header">
+                    <div class="game-header-left">
+                        <button id="home-btn" class="btn btn-home" title="Zur Missionübersicht">
+                            🏠
+                        </button>
+                        <button id="back-btn" class="btn btn-secondary">← Zurück</button>
+                    </div>
+                    <h2 id="mission-title">Mission</h2>
+                    <div id="mission-score" class="score">★★★</div>
+                </div>
+                
+                <div class="game-content">
+                    <div class="game-info">
+                        <div class="instruction-header">
+                            <h3>Aufgabe</h3>
+                            <button id="speak-btn" class="btn-icon" title="Anweisung vorlesen">
+                                🔊
+                            </button>
+                        </div>
+                        <p id="mission-instruction">Anweisung wird hier angezeigt...</p>
+                        <div id="mission-goals" class="goals">
+                            <!-- Goals will be displayed here -->
+                        </div>
+                    </div>
+                    
+                    <div class="chess-board" id="chess-board">
+                        <!-- Chess board will be rendered here -->
+                    </div>
+                    
+                    <div class="game-controls">
+                        <button id="hint-btn" class="btn btn-hint">💡 Tipp</button>
+                        <button id="reset-btn" class="btn btn-secondary">🔄 Reset</button>
+                        <button id="solution-btn" class="btn btn-solution">📖 Lösung</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Screen -->
+            <section id="progress-screen" class="screen">
+                <div class="progress-header">
+                    <button id="home-progress-btn" class="btn btn-home" title="Zur Missionübersicht">
+                        🏠
+                    </button>
+                    <h2>Dein Fortschritt</h2>
+                </div>
+                <div id="progress-stats" class="progress-stats">
+                    <!-- Progress stats will be displayed here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Lade Missionen...</p>
+        </div>
+
+        <!-- Modal for messages -->
+        <div id="modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Titel</h3>
+                    <button id="modal-close" class="modal-close">×</button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- Modal content -->
+                </div>
+                <div class="modal-footer">
+                    <button id="modal-ok" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/hints.js"></script>
+    <script src="js/solution.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

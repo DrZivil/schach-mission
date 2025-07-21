@@ -1,0 +1,298 @@
+/**
+ * Main Application Controller
+ * Handles app initialization and navigation
+ */
+
+class MissionSchachApp {
+    constructor() {
+        this.currentScreen = 'mission-select';
+        this.currentMission = null;
+        this.isInitialized = false;
+    }
+
+    async init() {
+        if (this.isInitialized) return;
+
+        try {
+            this.showLoading(true);
+            
+            // Initialize components
+            await this.initializeStorage();
+            await this.initializeMissions();
+            this.initializeUI();
+            this.initializeEventListeners();
+            
+            // Load initial screen
+            this.showScreen('mission-select');
+            
+            this.isInitialized = true;
+            console.log('Mission Schach App initialized successfully');
+            
+        } catch (error) {
+            console.error('Error initializing app:', error);
+            this.showError('Fehler beim Laden der Anwendung', error.message);
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async initializeStorage() {
+        // Storage is already initialized globally
+        // Test storage functionality
+        const testResult = await storage.saveSetting('app_initialized', true);
+        if (!testResult) {
+            throw new Error('Storage initialization failed');
+        }
+    }
+
+    async initializeMissions() {
+        // Missions will be initialized by missions.js
+        // This is a placeholder for mission system initialization
+        console.log('Mission system ready for initialization');
+    }
+
+    initializeUI() {
+        // UI event handlers will be set up
+        console.log('UI initialized');
+    }
+
+    initializeEventListeners() {
+        // Navigation
+        const missionsBtn = document.getElementById('missions-btn');
+        const progressBtn = document.getElementById('progress-btn');
+        const backBtn = document.getElementById('back-btn');
+        const homeBtn = document.getElementById('home-btn');
+        const homeProgressBtn = document.getElementById('home-progress-btn');
+
+        if (missionsBtn) {
+            missionsBtn.addEventListener('click', () => {
+                this.showScreen('mission-select');
+                this.setActiveNavButton('missions-btn');
+            });
+        }
+
+        if (progressBtn) {
+            progressBtn.addEventListener('click', () => {
+                this.showScreen('progress-screen');
+                this.setActiveNavButton('progress-btn');
+            });
+        }
+
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.showScreen('mission-select');
+                this.setActiveNavButton('missions-btn');
+            });
+        }
+
+        if (homeBtn) {
+            homeBtn.addEventListener('click', () => {
+                this.goToMissionOverview();
+            });
+        }
+
+        if (homeProgressBtn) {
+            homeProgressBtn.addEventListener('click', () => {
+                this.goToMissionOverview();
+            });
+        }
+
+        // Modal controls
+        const modalClose = document.getElementById('modal-close');
+        const modalOk = document.getElementById('modal-ok');
+        const modal = document.getElementById('modal');
+
+        if (modalClose) {
+            modalClose.addEventListener('click', () => this.hideModal());
+        }
+
+        if (modalOk) {
+            modalOk.addEventListener('click', () => this.hideModal());
+        }
+
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) this.hideModal();
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.hideModal();
+                if (this.currentScreen === 'game-screen') {
+                    this.goToMissionOverview();
+                }
+            }
+            // Home shortcut (H key)
+            if (e.key === 'h' || e.key === 'H') {
+                if (!e.target.matches('input, textarea')) {
+                    this.goToMissionOverview();
+                }
+            }
+        });
+    }
+
+    showScreen(screenId) {
+        // Hide all screens
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(screen => screen.classList.remove('active'));
+
+        // Show target screen
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            this.currentScreen = screenId;
+
+            // Load screen-specific content
+            this.loadScreenContent(screenId);
+        }
+    }
+
+    async loadScreenContent(screenId) {
+        switch (screenId) {
+            case 'mission-select':
+                if (window.missionManager) {
+                    await window.missionManager.loadMissionList();
+                }
+                break;
+            case 'progress-screen':
+                await this.loadProgressStats();
+                break;
+        }
+    }
+
+    setActiveNavButton(buttonId) {
+        // Remove active class from all nav buttons
+        const navButtons = document.querySelectorAll('.nav-btn');
+        navButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to target button
+        const targetButton = document.getElementById(buttonId);
+        if (targetButton) {
+            targetButton.classList.add('active');
+        }
+    }
+
+    async loadProgressStats() {
+        try {
+            const stats = await storage.getStorageStats();
+            const statsContainer = document.getElementById('progress-stats');
+            
+            if (statsContainer) {
+                statsContainer.innerHTML = `
+                    <div class="stat-row">
+                        <span class="stat-label">Missionen gespielt</span>
+                        <span class="stat-value">${stats.totalMissions}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Missionen abgeschlossen</span>
+                        <span class="stat-value">${stats.completedMissions}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Abschlussrate</span>
+                        <span class="stat-value">${Math.round(stats.completionRate)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Gesamtpunkte</span>
+                        <span class="stat-value">${stats.totalScore}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Sterne erhalten</span>
+                        <span class="stat-value">${stats.totalStars} ⭐</span>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading progress stats:', error);
+        }
+    }
+
+    showLoading(show = true) {
+        const loading = document.getElementById('loading');
+        if (loading) {
+            if (show) {
+                loading.classList.remove('hidden');
+            } else {
+                loading.classList.add('hidden');
+            }
+        }
+    }
+
+    showModal(title, content, callback = null) {
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalOk = document.getElementById('modal-ok');
+
+        if (modal && modalTitle && modalBody) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            modal.classList.remove('hidden');
+
+            // Set callback for OK button
+            if (callback && modalOk) {
+                modalOk.onclick = () => {
+                    this.hideModal();
+                    callback();
+                };
+            }
+        }
+    }
+
+    hideModal() {
+        const modal = document.getElementById('modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    showError(title, message) {
+        this.showModal(title, `<p style="color: var(--danger-color);">${message}</p>`);
+    }
+
+    showSuccess(title, message) {
+        this.showModal(title, `<p style="color: var(--success-color);">${message}</p>`);
+    }
+
+    // Mission management
+    startMission(missionId) {
+        this.currentMission = missionId;
+        this.showScreen('game-screen');
+        
+        if (window.gameController) {
+            window.gameController.startMission(missionId);
+        }
+    }
+
+    goToMissionOverview() {
+        // Show confirmation if user is in the middle of a mission
+        if (this.currentScreen === 'game-screen' && this.currentMission) {
+            this.showModal(
+                'Mission verlassen',
+                '<p>Möchtest du zur Missionübersicht zurückkehren? Der aktuelle Fortschritt geht verloren.</p>',
+                () => {
+                    this.currentMission = null;
+                    this.showScreen('mission-select');
+                    this.setActiveNavButton('missions-btn');
+                }
+            );
+        } else {
+            this.showScreen('mission-select');
+            this.setActiveNavButton('missions-btn');
+        }
+    }
+}
+
+// Global app instance
+const app = new MissionSchachApp();
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => app.init());
+} else {
+    app.init();
+}
+
+// Make app globally available
+window.missionSchachApp = app;

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "rules",
+    "title": "Regeln Lernen",
+    "description": "20 kindgerechte Missionen, um die Schachregeln zu verstehen",
+    "file": "rules_track.json"
+  },
+  {
+    "id": "strategy",
+    "title": "Strategie 101",
+    "description": "Grundlegende Schachstrategien für Erwachsene",
+    "file": "strategy_track.json"
+  }
+]

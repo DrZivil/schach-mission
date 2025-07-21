@@ -1,0 +1,111 @@
+{
+  "id": "strategy",
+  "title": "Strategie 101",
+  "description": "Einführung in grundlegende Schachstrategie für Erwachsene, die die Regeln kennen.",
+  "missions": [
+    {
+      "id": "s01",
+      "title": "Zentrumskontrolle",
+      "description": "Lerne, warum es wichtig ist, das Zentrum zu kontrollieren.",
+      "objective": "Ziehe deine Bauern ins Zentrum.",
+      "goals": [
+        {
+          "type": "position",
+          "piece": "P",
+          "square": "e4"
+        },
+        {
+          "type": "position",
+          "piece": "P",
+          "square": "d4"
+        }
+      ],
+      "startFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "solution": [
+        "e2e4",
+        "d2d4"
+      ],
+      "hint": "Beginne mit e4 und d4 – starke Zentrumsfelder."
+    },
+    {
+      "id": "s02",
+      "title": "Springer vor Läufer",
+      "description": "In der Eröffnung entwickeln wir zuerst Springer, dann Läufer.",
+      "objective": "Entwickle beide Springer.",
+      "goals": [
+        {
+          "type": "position",
+          "piece": "N",
+          "square": "f3"
+        },
+        {
+          "type": "position",
+          "piece": "N",
+          "square": "c3"
+        }
+      ],
+      "startFen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+      "solution": [
+        "g1f3",
+        "b1c3"
+      ],
+      "hint": "Zuerst e4, dann Springer nach f3 und c3."
+    },
+    {
+      "id": "s03",
+      "title": "Rochade sichern",
+      "description": "Rochiere früh, um deinen König zu schützen.",
+      "objective": "Führe eine kurze Rochade durch.",
+      "goals": [
+        {
+          "type": "castle",
+          "side": "kingside"
+        }
+      ],
+      "startFen": "rnbqkb1r/pppppppp/5n2/8/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+      "solution": [
+        "e1g1"
+      ],
+      "hint": "Stelle sicher, dass Springer und Läufer entwickelt sind."
+    },
+    {
+      "id": "s04",
+      "title": "Doppeldrohung",
+      "description": "Erkenne, wie man mit einem Zug zwei Figuren angreift.",
+      "objective": "Führe eine Doppeldrohung aus.",
+      "goals": [
+        {
+          "type": "check"
+        },
+        {
+          "type": "attack",
+          "piece": "R"
+        }
+      ],
+      "startFen": "rnbqkbnr/pppp1ppp/8/4p3/3P4/2N5/PPP2PPP/R1BQKBNR b KQkq - 0 3",
+      "solution": [
+        "d8h4"
+      ],
+      "hint": "Überlege, wie du mit der Dame Druck ausüben kannst."
+    },
+    {
+      "id": "s05",
+      "title": "Fesselung erkennen",
+      "description": "Nutze die Fesselung, um eine Figur unbeweglich zu machen.",
+      "objective": "Fessele eine Figur.",
+      "goals": [
+        {
+          "type": "pin",
+          "attacker": "B",
+          "victim": "N",
+          "behind": "K"
+        }
+      ],
+      "startFen": "rnbqk2r/pppp1ppp/5n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 4",
+      "solution": [
+        "f1b5"
+      ],
+      "hint": "Bringe den Läufer auf eine Diagonale, wo er Druck auf den Springer ausübt."
+    }
+  ]
+}

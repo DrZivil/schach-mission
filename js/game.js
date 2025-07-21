@@ -57,7 +57,8 @@ class GameController {
 
     initializeChessGame() {
         // Initialize Chess.js with mission's starting position
-        this.chess = new Chess(this.currentMission.boardInitial);
+        const startFen = this.currentMission.boardInitial || this.currentMission.fen || this.currentMission.startFen;
+        this.chess = new Chess(startFen);
         this.moveHistory = [];
         this.selectedSquare = null;
         
@@ -409,36 +410,67 @@ class GameController {
         // Enhanced goal checking with chess.js
         this.currentMission.goals.forEach(goal => {
             let goalMet = false;
-            const goalLower = goal.toLowerCase();
+            let goalText = '';
 
-            if (goalLower.includes('matt')) {
-                goalMet = this.chess.in_checkmate();
-            } else if (goalLower.includes('schach')) {
-                goalMet = this.chess.in_check();
-            } else if (goalLower.includes('e2-e4') || goalLower.includes('bauern') && goalLower.includes('e4')) {
-                goalMet = this.moveHistory.some(move => 
-                    (move.from === 'e2' && move.to === 'e4') || move.san === 'e4'
-                );
-            } else if (goalLower.includes('bewege') && goalLower.includes('bauern')) {
-                // Generic pawn move goal
-                goalMet = this.moveHistory.some(move => move.piece === 'p');
-            } else if (goalLower.includes('figur') && goalLower.includes('bewege')) {
-                // Any piece moved
-                goalMet = this.moveHistory.length > 0;
-            } else if (goalLower.includes('klicke') && goalLower.includes('feld')) {
-                // Introduction mission - field clicking
-                goalMet = true; // Auto-complete for now - can be enhanced with click tracking
-            } else if (goalLower.includes('gültigen zug')) {
-                // Any valid move made
-                goalMet = this.moveHistory.length > 0;
-            } else if (goalLower.includes('schlage') || goalLower.includes('capture')) {
-                // Capture move detection
-                goalMet = this.moveHistory.some(move => move.captured);
+            if (typeof goal === 'string') {
+                goalText = goal;
+                const goalLower = goal.toLowerCase();
+
+                if (goalLower.includes('matt')) {
+                    goalMet = this.chess.in_checkmate();
+                } else if (goalLower.includes('schach')) {
+                    goalMet = this.chess.in_check();
+                } else if (goalLower.includes('e2-e4') || (goalLower.includes('bauern') && goalLower.includes('e4'))) {
+                    goalMet = this.moveHistory.some(move =>
+                        (move.from === 'e2' && move.to === 'e4') || move.san === 'e4'
+                    );
+                } else if (goalLower.includes('bewege') && goalLower.includes('bauern')) {
+                    goalMet = this.moveHistory.some(move => move.piece === 'p');
+                } else if (goalLower.includes('figur') && goalLower.includes('bewege')) {
+                    goalMet = this.moveHistory.length > 0;
+                } else if (goalLower.includes('klicke') && goalLower.includes('feld')) {
+                    goalMet = true;
+                } else if (goalLower.includes('gültigen zug')) {
+                    goalMet = this.moveHistory.length > 0;
+                } else if (goalLower.includes('schlage') || goalLower.includes('capture')) {
+                    goalMet = this.moveHistory.some(move => move.captured);
+                }
+            } else if (goal && typeof goal === 'object') {
+                goalText = window.uiController ? window.uiController.formatGoal(goal) : JSON.stringify(goal);
+                switch (goal.type) {
+                    case 'position': {
+                        const p = this.chess.get(goal.square);
+                        if (p && p.type.toUpperCase() === goal.piece.toUpperCase()) {
+                            goalMet = true;
+                        }
+                        break;
+                    }
+                    case 'castle':
+                        goalMet = this.moveHistory.some(m => m.san === 'O-O' || m.san === 'O-O-O');
+                        break;
+                    case 'check':
+                        goalMet = this.chess.in_check();
+                        break;
+                    case 'attack': {
+                        const last = this.moveHistory[this.moveHistory.length - 1];
+                        if (last && last.captured && last.captured.toUpperCase() === goal.piece.toUpperCase()) {
+                            goalMet = true;
+                        }
+                        break;
+                    }
+                    case 'pin': {
+                        const p = this.chess.get('b5');
+                        if (p && p.type === 'b') goalMet = true;
+                        break;
+                    }
+                    default:
+                        break;
+                }
             }
 
             if (goalMet && window.uiController) {
-                window.uiController.markGoalCompleted(goal);
-                console.log('Goal completed:', goal);
+                window.uiController.markGoalCompleted(goalText);
+                console.log('Goal completed:', goalText);
             }
         });
 

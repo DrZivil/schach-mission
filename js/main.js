@@ -52,6 +52,8 @@ class MissionSchachApp {
     initializeEventListeners() {
         const missionsBtn = document.getElementById('missions-btn');
         const progressBtn = document.getElementById('progress-btn');
+        const importBtn = document.getElementById('import-btn');
+        const importInput = document.getElementById('import-input');
         const backBtn = document.getElementById('back-btn');
         const homeBtn = document.getElementById('home-btn');
         const homeProgressBtn = document.getElementById('home-progress-btn');
@@ -65,6 +67,17 @@ class MissionSchachApp {
             this.showScreen('progress-screen');
             this.setActiveNavButton('progress-btn');
         });
+
+        if (importBtn && importInput) {
+            importBtn.addEventListener('click', () => importInput.click());
+            importInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    this.importTrackFile(file);
+                    importInput.value = '';
+                }
+            });
+        }
 
         if (backBtn) backBtn.addEventListener('click', () => {
             this.showScreen('mission-select');
@@ -219,8 +232,7 @@ class MissionSchachApp {
             this.showScreen('mission-select');
             this.setActiveNavButton('missions-btn');
         }
-    }
-	
+    }	
 }
 
 const app = new MissionSchachApp();

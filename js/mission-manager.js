@@ -58,14 +58,39 @@ export class MissionManager {
         }
         return all;
     }
-	
-	loadMission(missionId) {
-		for (const track of this.tracks) {
-			const list = this.missions[track.id] || [];
-			const mission = list.find(m => m.id === missionId);
-			if (mission) return mission;
-		}
-		return null;
-	}
+
+    importTrack(track) {
+        if (!track || !track.id) return;
+
+        const existing = this.tracks.find(t => t.id === track.id);
+        if (!existing) {
+            this.tracks.push({
+                id: track.id,
+                title: track.title,
+                description: track.description,
+                file: track.file || null
+            });
+        }
+
+        if (track.missions) {
+            this.missions[track.id] = track.missions;
+        }
+    }
+
+    importTracks(trackArray) {
+        if (!Array.isArray(trackArray)) return;
+        for (const t of trackArray) {
+            this.importTrack(t);
+        }
+    }
+
+    loadMission(missionId) {
+        for (const track of this.tracks) {
+            const list = this.missions[track.id] || [];
+            const mission = list.find(m => m.id === missionId);
+            if (mission) return mission;
+        }
+        return null;
+    }
 
 }

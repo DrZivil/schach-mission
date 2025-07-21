@@ -52,6 +52,8 @@ class MissionSchachApp {
     initializeEventListeners() {
         const missionsBtn = document.getElementById('missions-btn');
         const progressBtn = document.getElementById('progress-btn');
+        const importBtn = document.getElementById('import-btn');
+        const importInput = document.getElementById('import-input');
         const backBtn = document.getElementById('back-btn');
         const homeBtn = document.getElementById('home-btn');
         const homeProgressBtn = document.getElementById('home-progress-btn');
@@ -65,6 +67,17 @@ class MissionSchachApp {
             this.showScreen('progress-screen');
             this.setActiveNavButton('progress-btn');
         });
+
+        if (importBtn && importInput) {
+            importBtn.addEventListener('click', () => importInput.click());
+            importInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    this.importTrackFile(file);
+                    importInput.value = '';
+                }
+            });
+        }
 
         if (backBtn) backBtn.addEventListener('click', () => {
             this.showScreen('mission-select');
@@ -220,13 +233,34 @@ class MissionSchachApp {
             this.setActiveNavButton('missions-btn');
         }
     }
-	
-	await this.initializeMissions();
-	this.showScreen('mission-select');
-	this.initializeUI();
-	this.initializeEventListeners();
-	await this.loadScreenContent('mission-select'); // ← direkt laden!
 
+    async importTrackFile(file) {
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+
+            let tracks = [];
+            if (Array.isArray(data)) {
+                tracks = data;
+            } else if (data.tracks) {
+                tracks = data.tracks;
+            } else if (data.id) {
+                tracks = [data];
+            }
+
+            if (tracks.length > 0 && window.missionManager) {
+                window.missionManager.importTracks(tracks);
+                this.loadScreenContent('mission-select');
+                this.showSuccess('Import erfolgreich', `${tracks.length} Track(s) importiert.`);
+            } else {
+                this.showError('Import fehlgeschlagen', 'Ungültiges Format.');
+            }
+        } catch (error) {
+            console.error('Import error:', error);
+            this.showError('Import fehlgeschlagen', error.message);
+        }
+    }
+	
 }
 
 const app = new MissionSchachApp();
